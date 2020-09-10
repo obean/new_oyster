@@ -1,4 +1,4 @@
-require 'journey'
+#require 'journey'
 class Oystercard
   attr_reader :balance, :journeys, :journey
   DEFAULT_BALANCE = 0
@@ -22,17 +22,21 @@ class Oystercard
   def tap_in(entry_station)
     raise 'Insufficient Funds' if @balance < MINIMUM_FARE
     deduct(Journey::PENALTY_FARE) unless @journey.nil?
+  
     @journey = @journey_class.new #unless @journey
     @journey.start(entry_station)
   end 
 
   def tap_out(exit_station = 'default')
     ## TODO: add for when card is already in journey
-    current_journey = @journey.end(exit_station)
+    #current_journey = @journey.end(exit_station)
+    @journey = Journey.new unless @journey
+    add_journey(@journey.end(exit_station))
     deduct(@journey.fare)
-    add_journey(current_journey)
+    
     @journey = nil
   end
+
 
   private
 
