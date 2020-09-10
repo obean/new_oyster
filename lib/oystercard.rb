@@ -21,7 +21,7 @@ class Oystercard
 
   def tap_in(entry_station)
     raise 'Insufficient Funds' if @balance < MINIMUM_FARE
-
+    deduct(Journey::PENALTY_FARE) unless @journey.nil?
     @journey = @journey_class.new #unless @journey
     @journey.start(entry_station)
   end 
@@ -31,7 +31,7 @@ class Oystercard
     current_journey = @journey.end(exit_station)
     deduct(@journey.fare)
     add_journey(current_journey)
-    #@journey = Journey.new
+    @journey = nil
   end
 
   private

@@ -7,8 +7,9 @@ describe Oystercard do
   let(:fare) { 20 }
   let(:entry_station) {double "entry_station"}
   let(:exit_station) { double "exit_station"}
-  let(:journey) {double("journey", start: entry_station, end: {entry_station: entry_station, exit_station: exit_station}) }
-  let(:journey_class) {double("journey_class", :new => journey) }
+  let(:journey) {double("journey", start: entry_station, end: {entry_station: entry_station, exit_station: exit_station}, fare: 1) }
+  let(:journey2) {double("journey", start: entry_station, end: {entry_station: entry_station, exit_station: nil}, fare: 6) }
+  let(:journey_class) {double("journey_class", :new => journey, :fare => 1) }
   
   it 'sets journey to nil when first created' do
     expect(card.journey).to eq nil
@@ -64,7 +65,11 @@ describe Oystercard do
         card.tap_in(entry_station)
       end
 
-
+      it 'will charge a penalty fare if you tap in twice' do
+        oyster = Oystercard.new(journey_class, 20)
+        oyster.tap_in(entry_station)
+        expect { oyster.tap_in(exit_station) }.to change{oyster.balance}.by -Journey::PENALTY_FARE
+      end
     end
     context "when card is :TAPPED_OUT with no balance" do 
       it 'raises an error when tapping in with balance less than minimum' do
