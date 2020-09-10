@@ -71,6 +71,7 @@ describe Oystercard do
         expect { oyster.tap_in(exit_station) }.to change{oyster.balance}.by -Journey::PENALTY_FARE
       end
     end
+    
     context "when card is :TAPPED_OUT with no balance" do 
       it 'raises an error when tapping in with balance less than minimum' do
         expect {card.tap_in(entry_station)}.to raise_error "Insufficient Funds"
