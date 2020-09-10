@@ -28,9 +28,22 @@ describe Journey do
       journey.start(entry_station)
       expect(journey.end(exit_station)).to eq ({ entry_station: entry_station, exit_station: exit_station })
     end
+
+   
   end
 
-
+  describe '#complete?' do 
+    it "it returns true if theres a complete journey" do
+      subject.start(entry_station)
+      subject.end(exit_station)
+      expect(subject.complete?).to eq true
+      #it returns true if both hash values are truthy and returns false if either is nil
+    end
+    it "flags an incomplete journey" do 
+      subject.end(exit_station)
+      expect(subject.complete?). to eq false 
+    end
+  end
 
   describe '#in_journey?' do
     it 'returns false if entry_station is nil' do
@@ -42,11 +55,19 @@ describe Journey do
       expect(journey.in_journey?).to eq true
     end
 
-    # it 'returns true if entry_station is not nil' do
-    #
-    #   expect(journey.in_journey?).to eq true
-    # end
+  end
 
+  describe "#fare" do
+    it "returns 1 when complete? = true" do
+      subject.start(entry_station)
+      subject.end(exit_station)
+      expect(subject.fare).to eq Journey::MINIMUM_FARE
+    end
+
+    it "returns 6 when complete? = false" do
+      subject.end(exit_station)
+      expect(subject.fare).to eq Journey::PENALTY_FARE
+    end
   end
 
 end

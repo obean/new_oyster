@@ -20,19 +20,18 @@ class Oystercard
   end
 
   def tap_in(entry_station)
-    @journey = @journey_class.new unless @journey
     raise 'Insufficient Funds' if @balance < MINIMUM_FARE
 
+    @journey = @journey_class.new #unless @journey
     @journey.start(entry_station)
   end 
 
   def tap_out(exit_station = 'default')
     ## TODO: add for when card is already in journey
-    deduct(MINIMUM_FARE)
-
     current_journey = @journey.end(exit_station)
+    deduct(@journey.fare)
     add_journey(current_journey)
-    reset_journey
+    #@journey = Journey.new
   end
 
   private
@@ -49,9 +48,6 @@ class Oystercard
     @journeys << current_journey
   end
 
-  def reset_journey
-    @entry_station = nil
-    @exit_station = nil
-  end
+
 
 end
